@@ -10,7 +10,7 @@ import {
   AsyncStorage,
   Picker
 } from "react-native";
-import {Body, Header, Icon, Left, Right,DatePicker
+import {Body,Header,Icon,Left,Right,DatePicker
 } from 'native-base';
 
 import * as ImagePicker from 'expo-image-picker';
@@ -81,7 +81,7 @@ export default function Signup() {
           image: picture,
           username: username,
           gender: gender,
-          dob: dob,
+          dob: dob.toLocaleDateString(),
           roll_no: roll_no,
           batch: batch,
           class_name: class_name,
@@ -92,6 +92,7 @@ export default function Signup() {
       )
       .then((response) => {
         alert(response.data);
+        Actions.admin();
       })
       .catch(function (error) {
         console.log(error);

@@ -19,6 +19,11 @@ import Studentprofile from './screens/studentprofile.js'
 import Date from './screens/datepicker.js'
 import Addsubject from './screens/addsubject.js'
 import Adminqrgenerate from './screens/adminqrgenerate.js'
+import Teacherprofile from './screens/teacherprofile.js'
+import Inactiveteacher from './screens/inactiveteacher.js'
+import Inactivestudent from './screens/inactivestudent.js'
+
+
 const Routes = () => (
    <Router navigationBarStyle={styles.navBar} titleStyle={styles.navBarTitle} barButtonTextStyle={styles.barButtonTextStyle} barButtonIconStyle={styles.barButtonIconStyle}>
       <Scene key = "root" hideNavBar >
@@ -45,6 +50,9 @@ const Routes = () => (
          <Scene key = "addsubject" component = {Addsubject} title = "Add Subject" titleStyle={styles.titlestyle}  />
          <Scene key = "adminqrgenerate" component = {Adminqrgenerate} title = "Generate QR" titleStyle={styles.titlestyle}  />
          <Scene key = "teacherlist" component = {Teacherlist} title = "Teacher list Screen" titleStyle={styles.titlestyle}  />
+         <Scene key = "teacherprofile" component = {Teacherprofile} title = "Teacher Profile Screen" titleStyle={styles.titlestyle}  />
+         <Scene key = "inactiveteacher" component = {Inactiveteacher} title = "Inactive Teacher" titleStyle={styles.titlestyle}  />
+         <Scene key = "inactivestudent" component = {Inactivestudent} title = "Inactive Student" titleStyle={styles.titlestyle}  />
 
       </Scene>
    </Router>

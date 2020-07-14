@@ -15,7 +15,7 @@ import { Actions } from 'react-native-router-flux';
 import axios from 'axios';
 import { DatePicker } from 'native-base';
 import Loader from './loader';
-const register = (props) => {
+const register = () => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
@@ -130,8 +130,8 @@ const register = (props) => {
       name == '' ||
       classname == 'Class' ||
       classname == '' ||
-      subjectname == '' ||
-      subjectname == 'Subject' ||
+      subject == '' ||
+      subject == 'Subject' ||
       phone == '' ||
       picture == '' ||
       email == '' ||
@@ -154,7 +154,7 @@ const register = (props) => {
           image: picture,
           username: username,
           gender: gender,
-          dob: dob,
+          dob: dob.toLocaleDateString(),
           class_name: classname,
           subject: subject,
           qualification: qualification,
@@ -162,6 +162,7 @@ const register = (props) => {
         .then(function (response) {
           setLoading(false);
           alert(response.data);
+          Actions.admin();
         })
         .catch(function (error) {
           console.log(error);
@@ -192,7 +193,6 @@ const register = (props) => {
           onChangeText={(text) => setEmail(text)}
           theme={mytheme}
         />
-
         <TextInput
           style={styles.inputstyle}
           label="Phone"
@@ -202,7 +202,6 @@ const register = (props) => {
           onChangeText={(text) => setPhone(text)}
           theme={mytheme}
         />
-
         <TextInput
           style={styles.inputstyle}
           label="Password"

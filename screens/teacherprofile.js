@@ -16,8 +16,8 @@ import { Avatar } from "react-native-paper";
 import { ScrollView } from "react-native-gesture-handler";
 // import HeaderComp from "../Header";
 
-export default function studentprofile({ navigation }) {
-  let [student, setStudent] = useState([]);
+export default function teacherprofile({ navigation }) {
+  let [teacher, setteacher] = useState([]);
   useEffect(() => {
     getUserData();
   }, []);
@@ -32,13 +32,13 @@ export default function studentprofile({ navigation }) {
       .then((data) => {
         axios
           .post("http://krishma.webcodice.com/react-native/axios.php", {
-            request: 12,
+            request: 24, //for single teacher profile show
             username: data,
           })
           .then((response) => {
             let data = response.data[0];
             console.log(response.data);
-            setStudent(data);
+            setteacher(data);
           })
           .catch(function (error) {
             console.log(error);
@@ -69,19 +69,18 @@ export default function studentprofile({ navigation }) {
           <Avatar.Image
             size={100}
             source={{
-              uri: student.image,
+              uri: teacher.image,
             }}
           />
-          <ProfileData Title="Name" data={student.name} />
-          <ProfileData Title="Roll No" data={student.roll_no} />
-          <ProfileData Title="Username" data={student.username} />
-          <ProfileData Title="Father Name" data={student.father_name} />
-          <ProfileData Title="Phone no" data={student.phone_no} />
-          <ProfileData Title="Class Name" data={student.class_name} />
-          <ProfileData Title="Section" data={student.section} />
-          <ProfileData Title="Email" data={student.email} />
-          <ProfileData Title="Gender" data={student.gender} />
-          <ProfileData Title="D.O.B" data={student.dob} />
+          <ProfileData Title="Name" data={teacher.name} />
+          <ProfileData Title="Email" data={teacher.email} />
+          <ProfileData Title="Username" data={teacher.username} />
+          <ProfileData Title="Phone No" data={teacher.phone_no} />
+          <ProfileData Title="Gender" data={teacher.gender} />
+          <ProfileData Title="D.O.B" data={teacher.dob} />
+          <ProfileData Title="Class Name" data={teacher.class_name} />
+          <ProfileData Title="Subject" data={teacher.subject} />
+          <ProfileData Title="Qualification" data={teacher.qualification} />
         </View>
       </ScrollView>
     </View>

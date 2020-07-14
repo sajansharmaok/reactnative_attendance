@@ -77,64 +77,49 @@ const backAction = () =>{
       <Text>Principal Screen</Text>
       <View style={{flexDirection:"row", margin:10}}>
       <Text style={styles.textstyle} onPress={()=> Actions.adminqrgenerate()}>
-      <Icon name="qr-scanner"  ios='ios-qr-scanner' android="md-qr-scanner" 
-      style={{fontSize: 30,}} />
-     &nbsp;&nbsp;
         Generate QR
         
         </Text>
-      <Text style={styles.textstyle} onPress={()=> Actions.register()}>
-      <Icon
-      name="person-add"  ios='ios-person-add' android="md-person-add" style={{fontSize: 30}} />
-        &nbsp;&nbsp;
-        Add Teacher</Text>
+     
 
 
       </View>
 
       <View style={{flexDirection:"row", margin:10}}>
       <Text style={styles.textstyle} onPress={()=> Actions.addsubject()}>
-      <Icon
-      name="person-add"  ios='ios-person-add' android="md-person-add" style={{fontSize: 30}} />
-        &nbsp;&nbsp;
         Add Subject</Text>
-
-      <Text style={styles.textstyle} onPress={()=> Actions.studentsignup()}>
-      <Icon
-      name="person-add"  ios='ios-person-add' android="md-person-add" style={{fontSize: 30}} />
-        &nbsp;&nbsp;
-        Add Student</Text>
+      <Text style={styles.textstyle} onPress={()=> Actions.addclass()}>
+        Add Class</Text>
+     
 
 
       </View>
       <View style={{flexDirection:"row", margin:10}}>
-      <Text style={styles.textstyle} onPress={()=> Actions.addclass()}>
-      <Icon
-      name="person-add"  ios='ios-person-add' android="md-person-add" style={{fontSize: 30}} />
-        &nbsp;&nbsp;
-        Add Class</Text>
+      <Text style={styles.textstyle} onPress={()=> Actions.studentsignup()}>
+        Add Student</Text>
 
       <Text style={styles.textstyle} onPress={()=> Actions.studentlist()}>
-      <Icon
-      name="paper"  ios='ios-paper' android="md-paper" style={{fontSize: 30}} />
-       &nbsp;&nbsp;
       View Students</Text>
 
 
       </View>
     
     <View style={{flexDirection:"row", margin:10}}>
-      <Text style={styles.textstyle} onPress={()=> Actions.addclass()}>
-      <Icon
-      name="person-add"  ios='ios-person-add' android="md-person-add" style={{fontSize: 30}} />
-        &nbsp;&nbsp;
-        Add Class</Text>
+    <Text style={styles.textstyle} onPress={()=> Actions.register()}>
+        Add Teacher</Text>
 
       <Text style={styles.textstyle} onPress={()=> Actions.teacherlist()}>
-      <Icon
-      name="paper"  ios='ios-paper' android="md-paper" style={{fontSize: 30}} />
-       &nbsp;&nbsp;
       View Teachers</Text>
+
+
+      </View>
+      <View style={{flexDirection:"row", margin:10}}>
+      <Text style={styles.textstyle} onPress={()=> Actions.inactivestudent()}>
+    
+       Inactive Students</Text>
+
+      <Text style={styles.textstyle} onPress={()=> Actions.inactiveteacher()}>
+      inactive Teachers</Text>
 
 
       </View>
@@ -175,11 +160,14 @@ cardView:{
   textstyle: {
     fontSize: 20,
     textAlign: 'center',
-    margin: 10,
+    marginTop: 2,
+    marginBottom: 5,
+    marginRight: 5,
     borderRadius:5,
     borderColor:"#333",
     borderWidth:1,
-    padding:8
+    padding:10,
+    width:'50%'
     
   }
 });

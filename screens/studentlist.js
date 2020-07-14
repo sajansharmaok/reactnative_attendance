@@ -4,25 +4,35 @@ import { View, Picker, StyleSheet, Text, AsyncStorage, Image, TouchableOpacity,
   StatusBar,
   ScrollView
   } from "react-native";
-import { Button, Title, Card,IconButton,Colors,Modal,TextInput, Portal, Provider, Dialog ,RadioButton} from "react-native-paper";
+import { Button, Title, Card,IconButton,Colors,Modal,TextInput,
+ Portal, Provider, Dialog ,RadioButton} from "react-native-paper";
 import QRCode from 'react-qr-code';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Actions } from "react-native-router-flux";
 import {Body, Header, Icon, Left, Right,DatePicker} from 'native-base';
 import axios from "axios";
+import DateTimePicker from 'react-native-modal-datetime-picker';
+import moment from 'moment';
+import * as ImagePicker from 'expo-image-picker';
+import * as Permissions from 'expo-permissions';
 
 export default function studentlist() {
-
     let [students, setStudents] = useState([]);
-  useEffect(() => {
+    useEffect(() => {
     getStudents();
      getClasses();
   }, []);
+    const [showDate, setDate] = useState(false);
+
+  // const value = '';
+  const mode = 'date';
+  const displayFormat = 'DD/MM/YYYY';
   const [id,setid]=useState('');
-  const [name, setstudentname] = useState("");
+  const [uname, setstudentname] = useState("");
   const [email, setemail] = useState("");
   const [phone_no, setphone] = useState("");
   const [password, setpass] = useState("");
+  const [image, setPicture] = useState("");
   const [username, setusername] = useState("");
   const [gender, setgender] = useState('male');
   const [dob, setdob] = useState('');
@@ -33,6 +43,60 @@ export default function studentlist() {
   const [registration, setregistration] = useState("");
   const [father_name, setfather_name] = useState("");
   let [classes, setClasses] = useState([]);
+
+const gallerypic = async () => {
+    const { granted } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    if (granted) {
+      let data = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.5,
+      });
+      if (!data.cancelled) {
+        let newfile = {
+          uri: data.uri,
+          type: `test/${data.uri.split(".")[1]}`,
+          name: `test.${data.uri.split(".")[1]}`,
+        };
+        uploadimage(newfile);
+      }
+    } else {
+      Alert.alert("No work");
+    }
+  };
+
+  const uploadimage = (image) => {
+    const data = new FormData();
+    data.append("file", image);
+    data.append("upload_preset", "attendanceApp");
+    data.append("cloud_name", "dbvq0lefw");
+    fetch("https://api.cloudinary.com/v1_1/dbvq0lefw/image/upload", {
+      method: "post",
+      body: data,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setPicture(data.url);
+      });
+  };
+  const showDateTimePicker = () => {
+    //alert('showDateTimePicker');
+    setDate(true);
+
+    // Keyboard.dismiss();
+  };
+
+  const hideDateTimePicker = () => {
+    setDate(false);
+  };
+
+  const handleDatePicked = (dob) => {
+    setdob(dob);
+    hideDateTimePicker();
+  };
+
    
    const getClasses = () => {
     axios
@@ -50,14 +114,15 @@ export default function studentlist() {
       });
   };
     const updatedata=()=>{
-    alert(`${name}:-user updated `);
+    alert(`${uname}:-user updated `);
 axios.post('http://krishma.webcodice.com/react-native/axios.php',{
          request:19,
           id: id,
-          name: name,
+          name: uname,
           email: email,
           phone_no: phone_no,
           password: password,
+          image :image,
           username: username,
           gender: gender,
           dob: dob,
@@ -78,13 +143,15 @@ axios.post('http://krishma.webcodice.com/react-native/axios.php',{
   }
 const [visible, setVisible] = useState(false);
 
-  const showModal = (id,name,email,phone_no,password,username,gender,dob,roll_no,batch,class_name,section,registration,father_name) => {
+  const showModal = (id,u_name,email,phone_no,password,image,username,gender,dob,roll_no,batch,class_name,section,registration,father_name) => {
     // console.log(pass);
+  setVisible(true);
   setid(id)
-  setstudentname(name)
+  setstudentname(u_name)
   setemail(email)
   setphone(phone_no)
   setpass(password)
+  setPicture(image)
   setusername(username)
   setgender(gender)
   setdob(dob)
@@ -93,13 +160,30 @@ const [visible, setVisible] = useState(false);
   setclassname(class_name)
   setsection(section)
   setregistration(registration)
-  setfather_name(father_name)
-      setVisible(true);
+  setfather_name(father_name)    
   }
   const hideModal = () => setVisible(false);
   useEffect(()=>{
     getStudents();
   },[]);
+  const deletestudent= (username) =>{
+ axios
+      .post(
+        "http://krishma.webcodice.com/react-native/axios.php",
+        {
+          request: 22,  // delete student from student list 
+          role:'student',
+          username:username,
+        }
+      )
+      .then((response) => {
+        alert(response.data);
+        console.log(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });                                  
+  };
   const getStudents = () => {
     axios
       .post(
@@ -118,10 +202,10 @@ const [visible, setVisible] = useState(false);
 
   // const [name, setName] = useState('');
   
-  AsyncStorage.getItem("user").then((data) => {
-    // let user = data;
-    setstudentname(data);
-})
+//   AsyncStorage.getItem("user").then((data) => {
+//     // let user = data;
+//     setstudentname(data);
+// })
 const logout = () =>{
   AsyncStorage.setItem("user", '' );
   Actions.login()
@@ -143,45 +227,73 @@ const logout = () =>{
           <ScrollView style={styles.scroll}>
   <Text style={styles.welcome}>
       <Text >Welcome</Text>
-      <Text> {name} </Text>
+     
       </Text>
 <View style={styles.content}>
 <Title style={styles.welcome}>List of Students</Title>
-{students.map((x) =>{ 
+{students.map((x) =>{
 let {id,name,email,phone_no,password,image,username,gender,dob,roll_no,batch,class_name,section,registration,father_name} = x
   return(
-
     <Card style={styles.mycard}
     key={id} >
     <View style={styles.cardView}>
         
+        <View style={{marginLeft:8}}> 
+         <TouchableOpacity onPress={()=>showModal(id,name,email,phone_no,password,image,username,gender,dob,roll_no,batch,class_name,section,registration,father_name)}>
+       <Image style={{width:60,height:60,borderRadius:30}} source={image?{uri: image}:{uri: 'https://n8d.at/wp-content/plugins/aioseop-pro-2.4.11.1/images/default-user-image.png'}}/>
         </TouchableOpacity> 
-        <View style={{marginLeft:10}}> 
+        <Text style={styles.text}>{name}</Text> 
            <Text style={styles.text}>{username}</Text>   
-             <Text style={styles.textstyle}>{email}</Text>  
-             <Text style={styles.textstyle}>{phone_no}</Text>   
-         <TouchableOpacity onPress={()=>showModal(id,name,email,phone_no,password,username,gender,dob,roll_no,batch,class_name,section,registration,father_name)}>
-       <Image style={{width:60,height:60,borderRadius:30}}
-        source={image?{uri: image}:{uri: 'https://n8d.at/wp-content/plugins/aioseop-pro-2.4.11.1/images/default-user-image.png'}}
-        />
+             <Text style={styles.text}>{email}</Text>  
+             <Text style={styles.text}>{phone_no}</Text>   
+
+             <Right>
+             <Icon
+                        ios="ios-trash"
+                        android="md-close-circle"
+                        style={{
+                          fontSize: 30,
+                          color: "#333",
+                        }}
+                        onPress={() => deletestudent(username)}
+                      />
+             </Right>
         </View>
     </View> 
    </Card>
         )
 })}
- </ScrollView>
-    </SafeAreaView>
   </View>
-<Modal className="mod" animationType="slide"
+ </ScrollView>
+  </SafeAreaView>
+    <Modal animationType="slide"
         transparent={false} visible={visible} onDismiss={hideModal}>
-     <View style={{ marginTop: 120 }}>
-     <SafeAreaView style={styles.content}>
-      <ScrollView style={styles.scroll}>
+     <View style={{ margin:"4%", backgroundColor: 'white' }}>
+    <ScrollView>
         <Title style={styles.welcome}>Update Student👨‍🎓</Title>
+         <View style={{ margin: "4%" }}>
+         <View style={{alignItems: "center",
+                    justifyContent:"center"}}>
+         <Image style={{
+                    width: 60,
+                    height: 60,
+                    borderRadius: 30,
+                  }}
+                  source={
+                    image
+                      ? { uri: image }
+                      : {
+                          uri:
+                            "https://n8d.at/wp-content/plugins/aioseop-pro-2.4.11.1/images/default-user-image.png",
+                        }
+                  }
+                />
+                <Text onPress={() => gallerypic()}>Edit</Text>
+                </View>
         <TextInput
         style={styles.inputstyle}
         label="Name"
-        value={name}
+        value={uname}
         mode="outlined"
         theme={mytheme}
         onChangeText={e=>setstudentname(e)}
@@ -211,21 +323,13 @@ let {id,name,email,phone_no,password,image,username,gender,dob,roll_no,batch,cla
           placeholder="Phone Number"
           onChangeText={e=>setphone(e)}
         />
-         <TextInput
-          style={styles.inputstyle}
-          label="Username"
-          value={username}
-          mode="outlined"
-          theme={mytheme}
-          onChangeText={e=>setusername(e)}
-        />
         <TextInput
           style={styles.inputstyle}
           label="Password"
           value={password}
           mode="outlined"
           theme={mytheme}
-          secureTextEntry={true}
+          secureTextEntry={false}
            onChangeText={e=>setpass(e)}
         /> 
          <View style={{flexDirection:"row"}}>
@@ -250,20 +354,22 @@ let {id,name,email,phone_no,password,image,username,gender,dob,roll_no,batch,cla
                 />
                 <Text style={{fontSize:20, padding:6}}>Female</Text>
         </View>
-        <DatePicker
-        theme={mytheme}
-        defaultDate={new Date()}
-          locale={"en"}
-          timeZoneOffsetInMinutes={undefined}
-          modalTransparent={false}
-          animationType={"fade"}
-          androidMode={"default"}
-          placeHolderText="Date of Birth"
-          textStyle={styles.textstyle}
-          placeHolderTextStyle={styles.datestyle}
-          onDateChange={(dob) =>setdob(dob)}
-          disabled={false}
-          />
+        
+        <Text
+                  style={styles.datetextstyle}
+                  onPress={() => showDateTimePicker()}
+                  theme={mytheme}
+                >
+                  {dob ? moment(dob).format(displayFormat) : "Select Date"}
+                </Text>
+                <DateTimePicker
+                  date={dob ? new Date(dob) : new Date()}
+                  theme={mytheme}
+                  isVisible={showDate}
+                  mode={mode}
+                  onConfirm={handleDatePicked}
+                  onCancel={() => hideDateTimePicker()}
+                />
         <TextInput
            style={styles.inputstyle}
            label="Roll no"
@@ -280,6 +386,7 @@ let {id,name,email,phone_no,password,image,username,gender,dob,roll_no,batch,cla
           theme={mytheme}
           onChangeText={e=>setbatch(e)}
         />
+
         <Picker  style={styles.pickerstyle} 
           theme={mytheme}
           selectedValue = {class_name} 
@@ -299,7 +406,6 @@ let {id,name,email,phone_no,password,image,username,gender,dob,roll_no,batch,cla
           <Picker.Item label = 'C' value = 'C'  />
           <Picker.Item label = 'D' value = 'D'  />
           <Picker.Item label = 'E' value = 'E'  />
-
           </Picker>
         <TextInput
            style={styles.inputstyle}
@@ -321,9 +427,11 @@ let {id,name,email,phone_no,password,image,username,gender,dob,roll_no,batch,cla
      onPress={hideModal}  title='cancel'>
         Cancel
       </Button>
+      </View>
       </ScrollView>
-    </SafeAreaView>
+        
        </View>
+    
         </Modal>
     </View>
   );
@@ -335,14 +443,12 @@ const mytheme = {
     },
   };
   const styles = StyleSheet.create({
-  
 container: {
     flex: 1,
   },
   content: {
     flex: 1,
     paddingTop: 40,
-    
   },
   button: {
     width: '60%',
@@ -353,8 +459,7 @@ container: {
     marginBottom: 20,
   },
   mycard:{
-    margin:5,
-   
+    margin:5, 
 },
 cardView:{
      flexDirection:"row",
@@ -363,9 +468,7 @@ cardView:{
 text:{
     fontSize:18,
 },
-textstyle:{
-    fontSize:14,
-},
+
   welcome: {
     fontSize: 20,
     textAlign: 'center',
@@ -417,6 +520,15 @@ textstyle:{
     borderWidth:1,
     color :'grey',
     backgroundColor:'#f2f2f2',
+  },
+  datetextstyle: {
+    margin: 5,
+    padding: 15,
+    borderRadius: 5,
+    borderColor: 'grey',
+    borderWidth: 1,
+    color: 'grey',
+    backgroundColor: '#f2f2f2',
   },
   datestyle: {
     margin: 5,

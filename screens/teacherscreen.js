@@ -1,4 +1,4 @@
-import React, {  useState } from 'react';
+import React, { useState } from 'react';
 import {View, Text, StyleSheet,AsyncStorage, TouchableOpacity} from 'react-native';
 import {Body, Header, Icon, Left, Right, Button, Card} from 'native-base';
 //import { Card } from 'react-native-paper';
@@ -73,7 +73,11 @@ const logout = () =>{
        &nbsp;&nbsp;
       View Students</Text>
 
-
+       <Text style={styles.textstyle} onPress={()=> Actions.teacherprofile()}>
+      <Icon
+      name="paper"  ios='ios-paper' android="md-paper" style={{fontSize: 30}} />
+       &nbsp;&nbsp;
+      View profile</Text>
       </View>
 
 

@@ -6,31 +6,31 @@
     $request = $data->request;
 
     // Fetch All Students
-    if($request == 1){
-        $userData = mysqli_query($con,"select * from react_native_student order by id asc");
+    // if($request == 1){
+    //     $userData = mysqli_query($con,"select * from react_native_student order by id asc");
 
-        $response = array();
-        while($row = mysqli_fetch_assoc($userData)){
-            $response[] = $row;
-        }
+    //     $response = array();
+    //     while($row = mysqli_fetch_assoc($userData)){
+    //         $response[] = $row;
+    //     }
 
-        echo json_encode($response);
-        exit;
-    }
-    // Fetch All Teachers
-    if($request == 2){
-        $userData = mysqli_query($con,"select * from react_native_teacher order by id asc");
+    //     echo json_encode($response);
+    //     exit;
+    // }
+    // // Fetch All Teachers
+    // if($request == 2){
+    //     $userData = mysqli_query($con,"select * from react_native_teacher order by id asc");
 
-        $response = array();
-        while($row = mysqli_fetch_assoc($userData)){
-            $response[] = $row;
-        }
-        echo json_encode($response);
-        exit;
-    }
+    //     $response = array();
+    //     while($row = mysqli_fetch_assoc($userData)){
+    //         $response[] = $row;
+    //     }
+    //     echo json_encode($response);
+    //     exit;
+    // }
     // Fetch All Users
     if($request == 3){
-        $userData = mysqli_query($con,"select * from react_native_user order by id asc");
+        $userData = mysqli_query($con,"SELECT * from react_native_user order by id asc");
 
         $response = array();
         while($row = mysqli_fetch_assoc($userData)){
@@ -63,7 +63,7 @@
         if(mysqli_num_rows($userData) == 0){
             $status = mysqli_query($con,"INSERT INTO react_native_student(name,email,phone_no,password,image,username,gender,dob,roll_no,batch,class_name,section,registration,father_name) VALUES('".$name."','".$email."','".$phone_no."','".$password."','".$image."','".$username."','".$gender."','".$dob."','".$roll_no."','".$batch."','".$class_name."','".$section."','".$registration."','".$father_name."')");
             if($status == 1){
-                mysqli_query($con,"INSERT INTO react_native_user(username,password,role) VALUES('".$username."','".$password."','student')");
+                mysqli_query($con,"INSERT INTO react_native_user(username,password,role,token) VALUES('".$username."','".$password."','student','0')");
                 echo 'Student Added';
             }
         }else{
@@ -88,9 +88,9 @@
 
         $userData = mysqli_query($con,"SELECT * FROM react_native_user WHERE username='".$username."'");
         if(mysqli_num_rows($userData) == 0){
-            $status = mysqli_query($con,"INSERT INTO react_native_teacher(name,email,phone_no,password,image,username,gender,dob,class_name,subject,qualification) VALUES('".$name."','".$email."','".$phone_no."','".$password."','".$image."','".$username."','".$gender."','".$dob."','".$class_name."','".$subject."','".$qualification."')");
+            $status = mysqli_query($con,"INSERT INTO react_native_teacher(name,email,phone_no,password,image,username,gender,dob,class_name,subject,qualification,status) VALUES('".$name."','".$email."','".$phone_no."','".$password."','".$image."','".$username."','".$gender."','".$dob."','".$class_name."','".$subject."','".$qualification."','active')");
             if($status == 1){
-                mysqli_query($con,"INSERT INTO react_native_user(username,password,role) VALUES('".$username."','".$password."','teacher')");
+                mysqli_query($con,"INSERT INTO react_native_user(username,password,role,token) VALUES('".$username."','".$password."','teacher', '0')");
                 echo 'Teacher Added';
             }
         }else{
@@ -155,7 +155,7 @@
 
 // Fetch All students
     if($request == 10){
-        $studentData = mysqli_query($con,"select * from react_native_student order by id asc");
+        $studentData = mysqli_query($con,"SELECT * from react_native_student WHERE status='active' order by id asc");
 
         $response = array();
         while($row = mysqli_fetch_assoc($studentData)){
@@ -168,7 +168,7 @@
 
     // Fetch All Classes
     if($request == 11){
-        $classData = mysqli_query($con,"select * from react_native_class");
+        $classData = mysqli_query($con,"SELECT * from react_native_class");
 
         $response = array();
         while($row = mysqli_fetch_assoc($classData)){
@@ -211,7 +211,7 @@
     } 
     // Fetch All subjects
     if($request == 14){
-        $subjectData = mysqli_query($con,"select * from react_native_subject");
+        $subjectData = mysqli_query($con,"SELECT * from react_native_subject");
 
         $response = array();
         while($row = mysqli_fetch_assoc($subjectData)){
@@ -243,7 +243,7 @@
     }
     // Fetch All teachers
     if($request == 16){
-        $teacherData = mysqli_query($con,"select * from react_native_teacher");
+        $teacherData = mysqli_query($con,"SELECT * from react_native_teacher WHERE status='active' order by id asc");
 
         $response = array();
         while($row = mysqli_fetch_assoc($teacherData)){
@@ -269,7 +269,7 @@
     }
     if($request == 18){
         
-        $teacherData = mysqli_query($con,"select * from react_native_qr_scan");
+        $teacherData = mysqli_query($con,"SELECT * from react_native_qr_scan");
 
         $response = array();
         while($row = mysqli_fetch_assoc($teacherData)){
@@ -296,7 +296,7 @@
         $phone_no = $data->phone_no;
         $password = $data->password;
         $image = $data->image;
-        $username = $data->username;
+        // $username = $data->username;
         $gender = $data->gender;
         $dob = $data->dob;
         $roll_no = $data->roll_no;
@@ -308,11 +308,11 @@
          $userData = mysqli_query($con,"SELECT * FROM react_native_user WHERE username='".$username."'");
         if(mysqli_num_rows($userData) == 0)
         {
-            $status = mysqli_query($con,"UPDATE react_native_student SET name='".$name."',email='".$email."',phone_no='".$phone_no."',password='".$password."',image='".$image."',username='".$username."',gender='".$gender."',dob='".$dob."',roll_no='".$roll_no."',batch='".$batch."',class_name='".$class_name."',section='".$section."',registration='".$registration."',father_name='".$father_name."' WHERE id=".$id);
-            if($status == 1){
-                mysqli_query($con,"UPDATE react_native_user SET username='".$username."',password='".$password."',role='student'");
+            $status = mysqli_query($con,"UPDATE react_native_student SET name='".$name."',email='".$email."',phone_no='".$phone_no."',password='".$password."',image='".$image."',gender='".$gender."',dob='".$dob."',roll_no='".$roll_no."',batch='".$batch."',class_name='".$class_name."',section='".$section."',registration='".$registration."',father_name='".$father_name."' WHERE id=".$id);
+            // if($status == 1){
+            //     mysqli_query($con,"UPDATE react_native_user SET username='".$username."',password='".$password."',role='student'");
                  echo " Student Data Updated Successfully";
-            }
+            // }
         }else{
             echo "username already exists.";
         }      
@@ -322,4 +322,141 @@
         // echo "Update Successfully";
         // exit;
     }
+        // Auto login user
+    if($request == 20){
+        $token = $data->token;
+
+        $userData = mysqli_query($con,'SELECT * FROM react_native_user WHERE token="'.$token.'"');
+        if(mysqli_num_rows($userData) > 0){
+            $response = array();
+
+            while($row = mysqli_fetch_assoc($userData)){
+                $response[] = $row;
+            }
+            echo json_encode($response);
+        }else{
+            echo "User not valid";
+        }
+        exit;
+    }  
+//view all qr
+    if($request == 21){
+        
+        $qrgenerateData = mysqli_query($con,"SELECT * FROM react_native_qr_code_generate");
+
+        $response = array();
+        while($row = mysqli_fetch_assoc($qrgenerateData)){
+            $response[] = $row;
+        }
+
+        echo json_encode($response); 
+     
+        exit;
+    }
+//delete student OR TEACHER
+    if($request == 22){
+        $role = $data->role;
+        $username = $data->username;
+        $status = mysqli_query($con,"DELETE FROM react_native_user WHERE username='".$username."' AND role ='".$role."' ");
+        if($status == 1){
+            if($role == 'student'){
+                mysqli_query($con,"UPDATE react_native_student SET status='inactive' WHERE username='".$username."'");
+                echo 'Student Deleted';
+            }
+            else if($role == 'teacher'){
+                mysqli_query($con,"UPDATE react_native_teacher SET status='inactive' username='".$username."'");
+                echo 'Teacher Deleted';
+            }
+        }
+    }
+   //  update single teacher data
+   if($request == 23){
+    $id = $data->id;
+    $name = $data->name;
+    $email = $data->email;
+    $phone_no = $data->phone_no;
+    $password = $data->password;
+    $image = $data->image;
+    $gender = $data->gender;
+    $dob = $data->dob;
+    $class_name = $data->class_name;
+    $subject = $data->subject;
+    $qualification  = $data->qualification;
+
+    $userData = mysqli_query($con,"SELECT * FROM react_native_user WHERE username='".$username."'");
+    if(mysqli_num_rows($userData) == 0){
+        $status = mysqli_query($con,"UPDATE react_native_teacher SET name='".$name."',email='".$email."',phone_no='".$phone_no."',password='".$password."',image='".$image."',gender='".$gender."',dob='".$dob."',class_name='".$class_name."',subject='".$subject."',qualification='".$qualification."' WHERE id=".$id);
+        // if($status == 1){
+        //     mysqli_query($con,"INSERT INTO react_native_user(username,password,role) VALUES('".$username."','".$password."','teacher')");
+            echo 'Teacher Added';
+        // }
+    }else{
+        echo "username already exists.";
+    }
+    exit;
+}
+        // Fetch Single Teacher
+        if($request == 24){
+            $username = $data->username;
+            $classData = mysqli_query($con,"SELECT * FROM react_native_teacher WHERE username='".$username."'");
+    
+            $response = array();
+            while($row = mysqli_fetch_assoc($classData)){
+                $response[] = $row;
+            }
+    
+            echo json_encode($response);
+            exit;
+        }
+
+//status change to active from inactive in student table 
+    if($request == 25){
+        $role = $data->role;
+        $username = $data->username;
+        $password =$data->password;
+        $status = mysqli_query($con,"UPDATE react_native_student SET status='active' WHERE username='".$username."'");
+        if($status == 1)
+        {
+           mysqli_query($con,"INSERT INTO react_native_user(username,password,role,token) VALUES('".$username."','".$password."','student', '0')");
+                echo 'Student Status Changed to Active';
+        }
+    }
+        //status change to active from inactive in teacher table 
+    if($request == 26){
+        $role = $data->role;
+        $username = $data->username;
+        $password =$data->password;
+        $status = mysqli_query($con,"UPDATE react_native_teacher SET status='active' WHERE username='".$username."'");
+        if($status == 1)
+        {   
+           mysqli_query($con,"INSERT INTO react_native_user(username,password,role,token) VALUES('".$username."','".$password."','teacher', '0')");
+                echo 'Teacher Status Changed to Active';
+        }
+    }
+ // Fetch All inactive student
+    if($request == 27){
+        $studentData = mysqli_query($con,"SELECT * from react_native_student WHERE status='inactive' order by id asc");
+
+        $response = array();
+        while($row = mysqli_fetch_assoc($studentData)){
+            $response[] = $row;
+        }
+
+        echo json_encode($response);
+        exit;
+    }
+    // Fetch Allinactive teachers
+    if($request == 28){
+        $teacherData = mysqli_query($con,"SELECT * from react_native_teacher WHERE status='inactive' order by id asc");
+
+        $response = array();
+        while($row = mysqli_fetch_assoc($teacherData)){
+            $response[] = $row;
+        }
+
+        echo json_encode($response);
+        exit;
+    }
+
+
 ?>
